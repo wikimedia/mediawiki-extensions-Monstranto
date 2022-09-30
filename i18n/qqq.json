@@ -1,0 +1,11 @@
+{
+	"@metadatat": {
+		"authors": [
+			"Brian Wolff"
+		]
+	},
+	"apihelp-monstrantobootstrap-summary": "{{doc-apihelp-summary|monstrantobootstrap}}\n\nThis is an internal module. Users are not expected to understand what it is or does.",
+	"apihelp-monstrantobootstrap-description": "{{doc-apihelp-extended-description|monstrantobootstrap}}\n\nThis is an internal module. Users are not expected to understand what it is or does.",
+	"monstranto-desc": "{{desc|name=Monstranto|url=https://www.mediawiki.org/wiki/Extension:Monstranto}}",
+	"monstranto-lua-notfound": "Error shown to user if the lua module being used could not be found. This error message is plaintext. No formatting characters can be used. Generally this error message is shown where a thumbnail would be and it is bolded and red.\n\n$1 - name of lua module that could not be found. Example: Module:foo"
+}

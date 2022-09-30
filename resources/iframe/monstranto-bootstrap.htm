@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+<head>
+	<title>Illustration</title>
+	<meta name="expected-origin" content="$$ORIGIN$$">
+	<meta name="monstranto-id" content="$$ID$$">
+	<script src="$$BASEPATH$$/lib/DomPurify/purify.min.js" defer></script>
+	<script src="$$BASEPATH$$/lib/fengari/fengari-web.js" defer></script>
+	<script src="$$BASEPATH$$/bootstrap.js" defer></script>
+	<style>
+		body {margin:0}
+		body > svg {display:block}
+		#mw-activation-overlay { position: fixed; width: 100%; height: 100%; cursor: pointer }
+		#mw-activation-button { margin: auto; font-size: 400%; background: grey; color: white; border-radius: 2em; width: 2ch; text-align: center }
+		#mw-activation-button:hover { background: darkgrey; color: black }
+		#mw-activation-overlay:active #mw-activation-button { color: red }
+		body.pending { cursor: wait }
+		.error { color: red }
+	</style>
+</head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" aria-label="Loading..." viewBox="0 0 100 100" width="25%" height="25%" style="display:block;margin:auto"><rect fill="#555" height="6" opacity=".083" rx="3" ry="3" transform="rotate(-60 50 50)" width="25" x="72" y="47"/><rect fill="#555" height="6" opacity=".167" rx="3" ry="3" transform="rotate(-30 50 50)" width="25" x="72" y="47"/><rect fill="#555" height="6" opacity=".25" rx="3" ry="3" width="25" x="72" y="47"/><rect fill="#555" height="6" opacity=".333" rx="3" ry="3" transform="rotate(30 50 50)" width="25" x="72" y="47"/><rect fill="#555" height="6" opacity=".417" rx="3" ry="3" transform="rotate(60 50 50)" width="25" x="72" y="47"/><rect fill="#555" height="6" opacity=".5" rx="3" ry="3" transform="rotate(90 50 50)" width="25" x="72" y="47"/><rect fill="#555" height="6" opacity=".583" rx="3" ry="3" transform="rotate(120 50 50)" width="25" x="72" y="47"/><rect fill="#555" height="6" opacity=".667" rx="3" ry="3" transform="rotate(150 50 50)" width="25" x="72" y="47"/><rect fill="#555" height="6" opacity=".75" rx="3" ry="3" transform="rotate(180 50 50)" width="25" x="72" y="47"/><rect fill="#555" height="6" opacity=".833" rx="3" ry="3" transform="rotate(210 50 50)" width="25" x="72" y="47"/><rect fill="#555" height="6" opacity=".917" rx="3" ry="3" transform="rotate(240 50 50)" width="25" x="72" y="47"/></svg>
+<!-- Taken from https://commons.wikimedia.org/wiki/File:Loading_spinner.svg -->
+</body>
+</html>

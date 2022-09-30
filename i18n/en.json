@@ -1,0 +1,11 @@
+{
+	"@metadatat": {
+		"authors": [
+			"Brian Wolff"
+		]
+	},
+	"apihelp-monstrantobootstrap-summary": "Internal helper for displaying illustrations.",
+	"apihelp-monstrantobootstrap-description": "Internal helper for displaying illustrations.",
+	"monstranto-desc": "Add SVG illustrations using lua",
+	"monstranto-lua-notfound": "Error: Could not fetch lua page '$1'"
+}

@@ -1,0 +1,71 @@
+{
+	"name": "Monstranto",
+	"version": "0.1",
+	"author": [
+		"Brian Wolff"
+	],
+	"url": "https://www.mediawiki.org/wiki/Extension:Monstranto",
+	"descriptionmsg": "monstranto-desc",
+	"requires": {
+		"MediaWiki": ">= 1.36",
+		"extensions": {
+			"Scribunto": "*"
+		}
+	},
+	"license-name": "GPL-2.0-or-later",
+	"type": "other",
+	"MessagesDirs": {
+		"Monstranto": [
+			"i18n"
+		]
+	},
+	"AutoloadNamespaces": {
+		"MediaWiki\\Extension\\Monstranto\\": "src/"
+	},
+	"Hooks": {
+		"ScribuntoExternalLibraries": "main"
+	},
+	"HookHandlers": {
+		"main": {
+			"class": "MediaWiki\\Extension\\Monstranto\\Hooks"
+		}
+	},
+	"APIModules": {
+		"monstrantobootstrap": {
+			"class": "MediaWiki\\Extension\\Monstranto\\Api\\Bootstrap"
+		}
+	},
+	"ServiceWiringFiles": [
+		"ServiceWiring.php"
+	],
+	"config": {
+	},
+	"ResourceModules": {
+		"ext.monstranto.styles": {
+			"styles": [
+				"styles/monstranto.css"
+			],
+			"targets": [
+				"mobile",
+				"desktop"
+			]
+		},
+		"ext.monstranto.init": {
+			"scripts": [
+				"init/init.js"
+			],
+			"targets": [
+				"mobile",
+				"desktop"
+			],
+			"messages": [
+				"monstranto-lua-notfound"
+			]
+		}
+	},
+	"ResourceFileModulePaths": {
+		"localBasePath": "resources",
+		"remoteExtPath": "Monstranto/resources"
+	},
+	"manifest_version": 2
+}
