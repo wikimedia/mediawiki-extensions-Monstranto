@@ -34,7 +34,7 @@ class Bootstrap extends ApiBase {
 
 		$this->getMain()->setCacheMode( 'public' );
 		$this->getMain()->setCacheMaxAge( 3600 ); // FIXME maybe longer?
-		$result->addValue( null, 'text', $this->getHTML( $params['id'] ), ApiResult::NO_SIZE_CHECK );
+		$result->addValue( null, 'text', $this->getHTML(), ApiResult::NO_SIZE_CHECK );
 		$result->addValue( null, 'mime', 'text/html', ApiResult::NO_SIZE_CHECK );
 		$result->addValue( null, 'filename', 'monstranto-bootstrap.htm', ApiResult::NO_SIZE_CHECK );
 		// Override core. Note, CSP also overrides X-Frame-Options so this is a bit moot.

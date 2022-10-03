@@ -19,6 +19,10 @@ class SVGInfo extends UploadBase {
 	/** @var TempFSFileFactory */
 	private $tmpFactory;
 
+	/**
+	 * @param \WebRequest $request
+	 * @return never
+	 */
 	public function initializeFromRequest( &$request ) {
 		throw new BadMethodCallException( "unimplemented" );
 	}
@@ -57,9 +61,5 @@ class SVGInfo extends UploadBase {
 				'height' => 512, // SVGReader::DEFAULT_HEIGHT
 			];
 		}
-	}
-
-	public function getSVGInfoFile( $file ) {
-		throw new Exception( "todo" );
 	}
 }

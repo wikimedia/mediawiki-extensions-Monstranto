@@ -5,6 +5,7 @@ namespace MediaWiki\Extension\Monstranto;
 use FormatJson;
 use Html;
 use MediaWiki\MediaWikiServices;
+use RepoGroup;
 use RequestContext;
 use Scribunto_LuaEngine;
 use Scribunto_LuaError;
@@ -16,7 +17,7 @@ class Lua extends Scribunto_LuaLibraryBase {
 	/** @var SVGInfo */
 	private $SVGInfo;
 
-	/** @var \RepoGroup */
+	/** @var RepoGroup */
 	private $repoGroup;
 
 	/**
@@ -123,7 +124,10 @@ class Lua extends Scribunto_LuaLibraryBase {
 			}
 		} else {
 			$info = [
+				// FIXME, phan is right, this could use refactoring
+				// @phan-suppress-next-line PhanPossiblyUndeclaredVariable
 				'width' => $file->getWidth(),
+				// @phan-suppress-next-line PhanPossiblyUndeclaredVariable
 				'height' => $file->getHeight()
 			];
 		}
