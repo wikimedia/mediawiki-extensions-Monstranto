@@ -1,7 +1,6 @@
 $( function () {
 
 	var sendError = function ( window, error ) {
-		document.body.className = 'errored';
 		window.postMessage( {
 			msg: error,
 			monstranto: "client",
@@ -43,15 +42,33 @@ $( function () {
 		switch ( event.data.type ) {
 			case 'getSVG':
 				opts = JSON.parse( iframe.getAttribute( 'data-mw-monstranto' ) );
-				iframe.contentWindow.postMessage(
-					{
-						monstranto: 'client',
-						type: 'setSVG',
-						svg: opts.svgText,
-						activation: opts.activation
-					},
-					'*'
-				);
+				var sendSvg = function ( svgText ) {
+					iframe.contentWindow.postMessage(
+						{
+							monstranto: 'client',
+							type: 'setSVG',
+							svg: svgText,
+							activation: opts.activation
+						},
+						'*'
+					);
+				}
+				if ( opts.svgFile !== undefined ) {
+					fetch( opts.svgFile, { mode: 'cors' } )
+						.then(function ( res ) {
+							if ( !res.ok ) {
+								throw new Error( "fetch error" );
+							}
+							return res.text()
+						} )
+						.then(sendSvg)
+						.catch( function( e ) {
+							console.log( e );
+							sendError( iframe.contentWindow, "Could not fetch svg" )
+						} );
+				} else {
+					sendSvg( opts.svgText );
+				}
 				break;
 			case 'activate':
 				opts = JSON.parse( iframe.getAttribute( 'data-mw-monstranto' ) );

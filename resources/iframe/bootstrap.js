@@ -40,10 +40,12 @@ window.addEventListener( 'message', function ( event ) {
 			doError( "no svg data" );
 			return;
 		}
+		// FIXME, this will work badly if using svgFile, and there are dtd entities
+		svgText = event.data.svg.replace( /^\s*<\?xml[^>]*>/, '' );
 		// Should we try and strip links? Currently the iframe
 		// sandbox does not let them be clicked. Or should we allow them?
 		// Should we allow HTML elements, or be strict with svg.
-		safeSVG = DOMPurify.sanitize( event.data.svg, {
+		safeSVG = DOMPurify.sanitize( svgText, {
 			USE_PROFILES: { svg: true, svgFilters: true },
 			NAMESPACE: 'http://www.w3.org/2000/svg'
 		} );
@@ -88,9 +90,6 @@ window.addEventListener( 'message', function ( event ) {
 			state = 'activated';
 			document.body.className = '';
 			console.log( "activating" );
-			console.log( event.data.moduleText );
-			console.log( event.data.callback );
-			console.log( event.data.callbackParameter );
 			startLua( event.data.moduleText, '@' + event.data.moduleName, event.data.callback, event.data.callbackParameter );
 		} else {
 			console.log( "ignoring activate due to wrong state" );
@@ -122,7 +121,8 @@ if (id !== false && window.parent !== window ) {
 	askForSVG();
 	if ( state === "waiting for svg" ) {
 		// In the event the parent frame hasn't loaded our handler yet.
-		intervalId = setInterval( askForSVG, 300 );
+		// FIXME, this should be tweaked to be better.
+		intervalId = setInterval( askForSVG, 2000 );
 	}
 } else {
 	doError( "Error: Cannot communicate with parent window" );

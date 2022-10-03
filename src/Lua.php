@@ -6,10 +6,18 @@ use FormatJson;
 use Html;
 use MediaWiki\MediaWikiServices;
 use RequestContext;
+use Scribunto_LuaEngine;
 use Scribunto_LuaError;
 use Scribunto_LuaLibraryBase;
+use Title;
 
 class Lua extends Scribunto_LuaLibraryBase {
+
+	/** @var SVGInfo */
+	private $SVGInfo;
+
+	/** @var \RepoGroup */
+	private $repoGroup;
 
 	/**
 	 * @inheritDoc
@@ -23,6 +31,23 @@ class Lua extends Scribunto_LuaLibraryBase {
 			$callbacks,
 			[] /* arguments to setup function */
 		);
+	}
+
+	/**
+	 * @param Scribunto_LuaEngine $engine
+	 * @param SVGInfo|null $SVGInfo
+	 * @param RepoGroup|null $repoGroup
+	 */
+	public function __construct(
+		Scribunto_LuaEngine $engine,
+		?SVGInfo $SVGInfo = null,
+		?RepoGroup $repoGroup = null
+	) {
+		parent::__construct( $engine );
+
+		$srv = MediaWikiServices::getInstance();
+		$this->SVGInfo = $SVGInfo ?? $srv->getService( SVGInfo::SERVICE_NAME );
+		$this->repoGroup = $repoGroup = $srv->getRepoGroup();
 	}
 
 	/**
@@ -54,7 +79,25 @@ class Lua extends Scribunto_LuaLibraryBase {
 		) {
 			throw new Scribunto_LuaError( "addIllustration(): exactly one of svgText or svgFile must be specified" );
 		}
-		// $border
+
+		if ( $svgFile !== null ) {
+			// This should be a value like "File:Foo.svg". Turn into a url.
+			// TODO: should the File prefix be optional?
+			$title = Title::newFromText( $svgFile );
+			if ( !$title || $title->getNamespace() !== NS_FILE ) {
+				throw new Scribunto_LuaError( "addIllustration(): Invalid svgFile specified" );
+			}
+			$file = $this->repoGroup->findFile( $title );
+			if ( !$file || !$file->exists() ) {
+				throw new Scribunto_LuaError( "addIllustration(): Cannot find specified svgFile" );
+			}
+			if ( $file->getMimeType() !== 'image/svg+xml' ) {
+				throw new Scribunto_LuaError( "addIllustration(): svgFile option must be an SVG type file" );
+			}
+			$svgFile = $file->getUrl();
+		}
+		// FIXME add some support for having a caption like thumbnails.
+		// Maybe also a lightbox thing like videos do if the width/height is small.
 		// It would be cool if we could pass a real function here.
 		$activationCallback = $this->getValue( $args, 'activationCallback', 'table' );
 		if ( is_array( $activationCallback )
@@ -68,9 +111,8 @@ class Lua extends Scribunto_LuaLibraryBase {
 		}
 
 		if ( $svgText !== null ) {
-			$SVGInfo = MediaWikiServices::getInstance()->getService( SVGInfo::SERVICE_NAME );
 
-			$info = $SVGInfo->getSvgInfo( $svgText );
+			$info = $this->SVGInfo->getSvgInfo( $svgText );
 
 			if ( $info['securityIssue'] !== false ) {
 				// This is more for the better UI than anything else.
@@ -79,18 +121,24 @@ class Lua extends Scribunto_LuaLibraryBase {
 				// TODO: We could also include the message explaining what is wrong.
 				throw new Scribunto_LuaError( "SVG is not allowed to have scripts in it" );
 			}
-
-			$aspect = $info['width'] / $info['height'];
-
-			if ( $width === -1 && $height === -1 ) {
-				$width = $info['width'];
-				$height = $info['height'];
-			} elseif ( $width === -1 && $height !== -1 ) {
-				$width = $aspect * $height;
-			} elseif ( $width !== -1 && $height === -1 ) {
-				$height = $aspect / $height;
-			}
+		} else {
+			$info = [
+				'width' => $file->getWidth(),
+				'height' => $file->getHeight()
+			];
 		}
+
+		$aspect = $info['width'] / $info['height'];
+
+		if ( $width === -1 && $height === -1 ) {
+			$width = $info['width'];
+			$height = $info['height'];
+		} elseif ( $width === -1 && $height !== -1 ) {
+			$width = $aspect * $height;
+		} elseif ( $width !== -1 && $height === -1 ) {
+			$height = $aspect / $height;
+		}
+
 		return [ $this->doAddIllustration(
 			[
 				'svgText' => $svgText,
@@ -127,7 +175,20 @@ class Lua extends Scribunto_LuaLibraryBase {
 		$parser->getOutput()->addModuleStyles( [ 'ext.monstranto.styles' ] );
 		$parser->getOutput()->addModules( [ 'ext.monstranto.init' ] );
 		$csp = Api\Bootstrap::getCSP( RequestContext::getMain()->getConfig() );
-		$jsonData = FormatJson::encode( $args, false, FormatJson::ALL_OK );
+		// svgText might potentially be large. A future todo might be to put
+		// it in a bottom script (SkinAfterBottomScripts), so we have it come
+		// late in html as not to unduly delay page loading on slow connections.
+		$dataArgs = [
+			'svgText' => $args['svgText'],
+			'svgFile' => $args['svgFile'],
+			'activation' => $args['activation'],
+			'activationCallback' => $args['activationCallback'],
+			'callbackParameter' => $args['callbackParameter']
+		];
+		if ( $dataArgs['svgFile'] === null ) {
+			unset( $dataArgs['svgFile'] );
+		}
+		$jsonData = FormatJson::encode( $dataArgs, false, FormatJson::ALL_OK );
 		$id = $this->getId();
 		return $parser->insertStripItem(
 			Html::element(
