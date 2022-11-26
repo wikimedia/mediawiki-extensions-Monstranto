@@ -3,7 +3,6 @@ namespace MediaWiki\Extension\Monstranto\Api;
 
 use ApiBase;
 use ApiFormatRaw;
-use ApiMain;
 use ApiResult;
 use Config;
 use Exception;
@@ -11,23 +10,19 @@ use MediaWiki\MainConfigNames;
 
 class Bootstrap extends ApiBase {
 
-	public function __construct(
-		ApiMain $main,
-		string $action
-	) {
-		parent::__construct( $main, $action );
-	}
-
+	/** @inheritDoc */
 	public function isInternal() {
 		return true;
 	}
 
+	/** @inheritDoc */
 	public function getCustomPrinter() {
 		$printer = new ApiFormatRaw( $this->getMain(), null );
 		$printer->setFailWithHTTPError( true );
 		return $printer;
 	}
 
+	/** @inheritDoc */
 	public function execute() {
 		$result = $this->getResult();
 		$params = $this->extractRequestParams();
@@ -44,6 +39,10 @@ class Bootstrap extends ApiBase {
 		);
 	}
 
+	/**
+	 * @param Config $config
+	 * @return string
+	 */
 	public static function getCSP( Config $config ) {
 		// Static so we can use this elsewhere.
 		// FIXME broken if using protocol relative.

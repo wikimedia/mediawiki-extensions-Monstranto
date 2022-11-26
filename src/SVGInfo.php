@@ -20,7 +20,7 @@ class SVGInfo extends UploadBase {
 	private $tmpFactory;
 
 	/**
-	 * @param \WebRequest $request
+	 * @param \WebRequest &$request
 	 * @return never
 	 */
 	public function initializeFromRequest( &$request ) {
