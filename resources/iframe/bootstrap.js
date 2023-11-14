@@ -2,10 +2,8 @@
 
 const expectedOrigin = document.querySelector( 'meta[name=expected-origin]' ).content;
 var svgLoaded = false;
-// The idea behind using a hash instead of query param, is we could have better varnish cache hit ratio.
-const id = location.hash.match( /^#monstranto-id=[a-zA-Z0-9_-]+$/ ) ?
-	location.hash.replace( /^#monstranto-id=/, '' ) :
-	false;
+// Originally this was a hash parameter, but that was unreliable.
+const id = ( new URLSearchParams( location.search ) ).get( 'monstranto-id' );
 var intervalId = false;
 // states go: uninitialized, waiting for svg, unactivated, waiting for lua, activated
 var state = "uninitialized";

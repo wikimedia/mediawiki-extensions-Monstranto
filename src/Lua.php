@@ -200,7 +200,7 @@ class Lua extends Scribunto_LuaLibraryBase {
 				[
 					'id' => 'mw-monstranto-frame-' . $id,
 					'class' => 'mw-monstranto',
-					'src' => $this->getBootstrap() . '#monstranto-id=' . $id ,
+					'src' => $this->getBootstrap( $id ),
 					'sandbox' => 'allow-scripts',
 					// We also put CSP on api response.
 					// attribute is not supported on all browsers.
@@ -217,13 +217,14 @@ class Lua extends Scribunto_LuaLibraryBase {
 	/**
 	 * Get api bootstrap url
 	 *
+	 * @param string $id monstanto id
 	 * @return string
 	 */
-	private function getBootstrap(): string {
+	private function getBootstrap( $id ): string {
 		return wfExpandUrl(
 			wfAppendQuery(
 				wfScript( 'api' ),
-				[ 'action' => 'monstrantobootstrap' ]
+				[ 'action' => 'monstrantobootstrap', 'monstranto-id' => $id ]
 			),
 			PROTO_CANONICAL
 		);
