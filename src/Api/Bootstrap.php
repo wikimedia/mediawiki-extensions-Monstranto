@@ -5,8 +5,9 @@ use ApiBase;
 use ApiFormatRaw;
 use ApiResult;
 use Config;
-use Exception;
 use MediaWiki\MainConfigNames;
+use RuntimeException;
+use UnexpectedValueException;
 
 class Bootstrap extends ApiBase {
 
@@ -51,7 +52,7 @@ class Bootstrap extends ApiBase {
 			PROTO_CANONICAL
 		);
 		if ( strpos( $assetPath, ',' ) !== false || strpos( $assetPath, ';' ) !== false ) {
-			throw new Exception( "invalid csp" );
+			throw new UnexpectedValueException( "invalid csp" );
 		}
 		// FIXME, should we allow loading images? other media? sounds?
 		return "frame-ancestors 'self'; connect-src data:; script-src 'unsafe-eval' $assetPath";
@@ -67,7 +68,7 @@ class Bootstrap extends ApiBase {
 		$html = file_get_contents( __DIR__ . '/../../resources/iframe/monstranto-bootstrap.htm' );
 
 		if ( $html === false ) {
-			throw new Exception( "Can't read monstranto iframe" );
+			throw new RuntimeException( "Can't read monstranto iframe" );
 		}
 
 		// Not clear if this is the best approach. Could use a mustache template.

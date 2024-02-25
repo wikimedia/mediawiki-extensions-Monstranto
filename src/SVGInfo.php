@@ -6,6 +6,7 @@ use BadMethodCallException;
 use Config;
 use Exception;
 use MediaWiki\FileBackend\FSFile\TempFSFileFactory;
+use RuntimeException;
 use SVGReader;
 use UploadBase;
 
@@ -44,7 +45,7 @@ class SVGInfo extends UploadBase {
 		// Unfortunately all MW code seems to want files not strings.
 		$file = $this->tmpFactory->newTempFSFile( 'monstranto_', 'svg' );
 		if ( !$file ) {
-			throw new Exception( "Cannot create temp file" );
+			throw new RuntimeException( "Cannot create temp file" );
 		}
 		file_put_contents( $file->getPath(), $svg );
 
