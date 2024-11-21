@@ -7,7 +7,7 @@
 	"url": "https://www.mediawiki.org/wiki/Extension:Monstranto",
 	"descriptionmsg": "monstranto-desc",
 	"requires": {
-		"MediaWiki": ">= 1.40",
+		"MediaWiki": ">= 1.41",
 		"extensions": {
 			"Scribunto": "*"
 		}

@@ -2,7 +2,9 @@
 
 namespace MediaWiki\Extension\Monstranto;
 
-class Hooks {
+class Hooks implements
+	\MediaWiki\Extension\Scribunto\Hooks\ScribuntoExternalLibrariesHook
+{
 
 	/**
 	 * Hook to load lua library
