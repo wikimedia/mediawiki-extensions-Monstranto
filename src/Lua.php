@@ -3,14 +3,14 @@
 namespace MediaWiki\Extension\Monstranto;
 
 use FormatJson;
-use Html;
+use MediaWiki\Html\Html;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Title\Title;
 use RepoGroup;
 use RequestContext;
 use Scribunto_LuaEngine;
 use Scribunto_LuaError;
 use Scribunto_LuaLibraryBase;
-use Title;
 
 class Lua extends Scribunto_LuaLibraryBase {
 
