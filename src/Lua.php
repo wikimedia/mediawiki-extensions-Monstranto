@@ -3,16 +3,16 @@
 namespace MediaWiki\Extension\Monstranto;
 
 use FormatJson;
+use MediaWiki\Extension\Scribunto\Engines\LuaCommon\LibraryBase;
+use MediaWiki\Extension\Scribunto\Engines\LuaCommon\LuaEngine;
+use MediaWiki\Extension\Scribunto\Engines\LuaCommon\LuaError;
 use MediaWiki\Html\Html;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Title\Title;
 use RepoGroup;
 use RequestContext;
-use Scribunto_LuaEngine;
-use Scribunto_LuaError;
-use Scribunto_LuaLibraryBase;
 
-class Lua extends Scribunto_LuaLibraryBase {
+class Lua extends LibraryBase {
 
 	/** @var SVGInfo */
 	private $SVGInfo;
@@ -35,12 +35,12 @@ class Lua extends Scribunto_LuaLibraryBase {
 	}
 
 	/**
-	 * @param Scribunto_LuaEngine $engine
+	 * @param LuaEngine $engine
 	 * @param SVGInfo|null $SVGInfo
 	 * @param RepoGroup|null $repoGroup
 	 */
 	public function __construct(
-		Scribunto_LuaEngine $engine,
+		LuaEngine $engine,
 		?SVGInfo $SVGInfo = null,
 		?RepoGroup $repoGroup = null
 	) {
@@ -78,7 +78,7 @@ class Lua extends Scribunto_LuaLibraryBase {
 		if ( ( $svgText === null && $svgFile === null )
 			|| ( $svgText !== null && $svgFile !== null )
 		) {
-			throw new Scribunto_LuaError( "addIllustration(): exactly one of svgText or svgFile must be specified" );
+			throw new LuaError( "addIllustration(): exactly one of svgText or svgFile must be specified" );
 		}
 
 		if ( $svgFile !== null ) {
@@ -86,14 +86,14 @@ class Lua extends Scribunto_LuaLibraryBase {
 			// TODO: should the File prefix be optional?
 			$title = Title::newFromText( $svgFile );
 			if ( !$title || $title->getNamespace() !== NS_FILE ) {
-				throw new Scribunto_LuaError( "addIllustration(): Invalid svgFile specified" );
+				throw new LuaError( "addIllustration(): Invalid svgFile specified" );
 			}
 			$file = $this->repoGroup->findFile( $title );
 			if ( !$file || !$file->exists() ) {
-				throw new Scribunto_LuaError( "addIllustration(): Cannot find specified svgFile" );
+				throw new LuaError( "addIllustration(): Cannot find specified svgFile" );
 			}
 			if ( $file->getMimeType() !== 'image/svg+xml' ) {
-				throw new Scribunto_LuaError( "addIllustration(): svgFile option must be an SVG type file" );
+				throw new LuaError( "addIllustration(): svgFile option must be an SVG type file" );
 			}
 			$svgFile = $file->getUrl();
 		}
@@ -104,11 +104,11 @@ class Lua extends Scribunto_LuaLibraryBase {
 		if ( is_array( $activationCallback )
 			&& ( !is_string( $activationCallback[1] ) || !is_string( $activationCallback[2] ) )
 		) {
-			throw new Scribunto_LuaError( "addIllustration() given invalid activationCallback callback" );
+			throw new LuaError( "addIllustration() given invalid activationCallback callback" );
 		}
 		$activation = $this->getValue( $args, 'activation', 'string', $activationCallback ? 'button' : 'none' );
 		if ( !in_array( $activation, [ 'none', 'button', 'click' ] ) ) {
-			throw new Scribunto_LuaError( "addIllustration() given invalid activation argument" );
+			throw new LuaError( "addIllustration() given invalid activation argument" );
 		}
 
 		if ( $svgText !== null ) {
@@ -120,7 +120,7 @@ class Lua extends Scribunto_LuaLibraryBase {
 				// I have more faith in the client side DOMPurify than this
 				// server side check.
 				// TODO: We could also include the message explaining what is wrong.
-				throw new Scribunto_LuaError( "SVG is not allowed to have scripts in it" );
+				throw new LuaError( "SVG is not allowed to have scripts in it" );
 			}
 		} else {
 			$info = [
@@ -246,7 +246,7 @@ class Lua extends Scribunto_LuaLibraryBase {
 
 		$type = $this->getLuaType( $args[$name] );
 		if ( $type !== $expectedType ) {
-			throw new Scribunto_LuaError(
+			throw new LuaError(
 				"bad argument $name to addIllustration ($expectedType expected, got $type)"
 			);
 		}
