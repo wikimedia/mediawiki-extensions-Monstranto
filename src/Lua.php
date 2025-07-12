@@ -62,6 +62,7 @@ class Lua extends LibraryBase {
 	 *    activationCallback - array [ moduleName, function ] client side callback.
 	 *    callbackParameter - array
 	 * @return array
+	 * @throws LuaError
 	 */
 	public function addIllustration( $args ) {
 		$this->checkType( 'addIllustration', 1, $args, 'table' );
@@ -238,6 +239,7 @@ class Lua extends LibraryBase {
 	 * @param string $expectedType
 	 * @param mixed $default
 	 * @return mixed
+	 * @throws LuaError
 	 */
 	public function getValue( $args, $name, $expectedType, $default = null ) {
 		if ( !isset( $args[$name] ) ) {

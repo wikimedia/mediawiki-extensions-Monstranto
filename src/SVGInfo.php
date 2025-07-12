@@ -53,7 +53,7 @@ class SVGInfo extends UploadBase {
 		try {
 			$svgReader = new SVGReader( $file->getPath() );
 			return $svgReader->getMetadata() + [ 'securityIssue' => $scriptCheck ];
-		} catch ( Exception $e ) {
+		} catch ( Exception ) {
 			// not sure if we should do something with this? throw an error?
 			// Primary cause seems to be an <svg> tag without a namespace decleartion.
 			return [
