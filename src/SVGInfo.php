@@ -35,6 +35,7 @@ class SVGInfo extends UploadBase {
 	public function __construct( Config $config, TempFSFileFactory $tmpFactory ) {
 		$this->config = $config;
 		$this->tmpFactory = $tmpFactory;
+		parent::__construct();
 	}
 
 	/**
