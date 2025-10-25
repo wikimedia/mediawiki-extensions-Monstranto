@@ -6,6 +6,8 @@ use BadMethodCallException;
 use Config;
 use Exception;
 use MediaWiki\FileBackend\FSFile\TempFSFileFactory;
+use MediaWiki\MediaWikiServices;
+use MediaWiki\Utils\MWFileProps;
 use RuntimeException;
 use SVGReader;
 use UploadBase;
@@ -50,7 +52,21 @@ class SVGInfo extends UploadBase {
 		}
 		file_put_contents( $file->getPath(), $svg );
 
-		$scriptCheck = $this->detectScriptInSvg( $file->getPath(), false );
+		if ( method_exists( $this, 'detectScriptInSvg' ) ) {
+			// MW <1.45
+			// @phan-suppress-next-line PhanUndeclaredMethod
+			$scriptCheck = $this->detectScriptInSvg( $file->getPath(), false );
+		} else {
+			// MW >=1.45
+			$uploadVerification = MediaWikiServices::getInstance()->getUploadVerification();
+			$mwProps = new MWFileProps( MediaWikiServices::getInstance()->getMimeAnalyzer() );
+			$scriptCheck = $uploadVerification->verifyFile(
+				$file->getPath(),
+				'svg',
+				$mwProps->getPropsFromPath( $file->getPath(), 'svg' )
+			);
+		}
+
 		try {
 			$svgReader = new SVGReader( $file->getPath() );
 			return $svgReader->getMetadata() + [ 'securityIssue' => $scriptCheck ];

@@ -220,10 +220,10 @@ class Lua extends LibraryBase {
 	 * Get api bootstrap url
 	 *
 	 * @param string $id monstanto id
-	 * @return string
+	 * @return ?string
 	 */
-	private function getBootstrap( $id ): string {
-		return wfExpandUrl(
+	private function getBootstrap( $id ): ?string {
+		return MediaWikiServices::getInstance()->getUrlUtils()->expand(
 			wfAppendQuery(
 				wfScript( 'api' ),
 				[ 'action' => 'monstrantobootstrap', 'monstranto-id' => $id ]

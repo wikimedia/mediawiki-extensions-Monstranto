@@ -6,6 +6,7 @@ use ApiFormatRaw;
 use ApiResult;
 use Config;
 use MediaWiki\MainConfigNames;
+use MediaWiki\MediaWikiServices;
 use RuntimeException;
 use UnexpectedValueException;
 
@@ -47,11 +48,11 @@ class Bootstrap extends ApiBase {
 	public static function getCSP( Config $config ) {
 		// Static so we can use this elsewhere.
 		// FIXME broken if using protocol relative.
-		$assetPath = wfExpandUrl(
+		$assetPath = MediaWikiServices::getInstance()->getUrlUtils()->expand(
 			$config->get( MainConfigNames::ExtensionAssetsPath ) . '/Monstranto/resources/iframe/',
 			PROTO_CANONICAL
 		);
-		if ( strpos( $assetPath, ',' ) !== false || strpos( $assetPath, ';' ) !== false ) {
+		if ( !$assetPath || str_contains( $assetPath, ',' ) || str_contains( $assetPath, ';' ) ) {
 			throw new UnexpectedValueException( "invalid csp" );
 		}
 		// FIXME, should we allow loading images? other media? sounds?
@@ -75,18 +76,16 @@ class Bootstrap extends ApiBase {
 		// Should we be using RL?
 
 		// FIXME This doesn't work if $wgServer is protocol relative!
-		$origin = htmlspecialchars( $config->get( MainConfigNames::CanonicalServer ) );
+		$origin = $config->get( MainConfigNames::CanonicalServer );
 		// Current CSP only works with canonical url.
-		$basePath = htmlspecialchars(
-			wfExpandUrl(
-				$config->get( MainConfigNames::ExtensionAssetsPath ) .
-					'/Monstranto/resources/iframe',
-				PROTO_CANONICAL
-			)
+		$basePath = MediaWikiServices::getInstance()->getUrlUtils()->expand(
+			$config->get( MainConfigNames::ExtensionAssetsPath ) .
+				'/Monstranto/resources/iframe',
+			PROTO_CANONICAL
 		);
 		$html = str_replace(
 			[ '$$ORIGIN$$', '$$BASEPATH$$' ],
-			[ $origin, $basePath ],
+			[ htmlspecialchars( $origin ), htmlspecialchars( (string)$basePath ) ],
 			$html
 		);
 		return $html;
