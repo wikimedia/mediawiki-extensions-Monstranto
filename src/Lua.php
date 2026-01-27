@@ -49,7 +49,7 @@ class Lua extends LibraryBase {
 
 		$srv = MediaWikiServices::getInstance();
 		$this->SVGInfo = $SVGInfo ?? $srv->getService( SVGInfo::SERVICE_NAME );
-		$this->repoGroup = $repoGroup = $srv->getRepoGroup();
+		$this->repoGroup = $repoGroup ?? $srv->getRepoGroup();
 	}
 
 	/**
